@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  portainer:
+    depends_on:
+      - cloudflared
+    image: portainer/portainer-ee:latest
+    container_name: portainer
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/data
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: portainer-ingress
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - portainer
+networks:
+  portainer:
+    name: portainer
