@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: ingress
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - cloudflared
+networks:
+  auditcom:
+    name: cloudflared
+    external: true
